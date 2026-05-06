@@ -1,0 +1,24 @@
+# requirements.txt
+# Install with: pip install -r requirements.txt
+
+# Kafka client
+kafka-python==2.0.2
+
+# HTTP requests (for CoinGecko API)
+requests==2.31.0
+
+# PostgreSQL driver
+psycopg2-binary==2.9.9
+
+# Data processing
+pandas==2.1.4
+numpy==1.26.2
+
+# Spark (local development)
+pyspark==3.5.0
+
+# Airflow (install separately — see README for instructions)
+# apache-airflow==2.8.0
+
+# Utilities
+python-dotenv==1.0.0

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Docker volumes
+postgres_data/
+grafana_data/
+
+# Spark
+/tmp/spark-checkpoints/
+
+# Airflow
+airflow/logs/
+airflow/plugins/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
