@@ -34,6 +34,12 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "kafka:29092", "--list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     networks:
       - streaming-net
 
@@ -52,6 +58,51 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streamuser -d streamdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - streaming-net
+
+  # ─────────────────────────────────────────
+  # CRYPTO PRODUCER (CoinGecko → Kafka)
+  # ─────────────────────────────────────────
+  producer:
+    build: ./producer
+    container_name: crypto-producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: kafka:29092
+      KAFKA_TOPIC: crypto-prices
+      POLL_INTERVAL_SECONDS: "10"
+    restart: unless-stopped
+    networks:
+      - streaming-net
+
+  # ─────────────────────────────────────────
+  # CRYPTO CONSUMER (Kafka → PostgreSQL)
+  # ─────────────────────────────────────────
+  consumer:
+    build: ./consumer
+    container_name: crypto-consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: kafka:29092
+      KAFKA_TOPIC: crypto-prices
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: streamdb
+      DB_USER: streamuser
+      DB_PASSWORD: streampass
+    restart: unless-stopped
     networks:
       - streaming-net
 
@@ -84,6 +135,36 @@ services:
     networks:
       - streaming-net
 
+  # Submits the streaming job to the Spark cluster.
+  # Restarts automatically if the job crashes.
+  spark-submit:
+    image: bitnami/spark:3.5
+    container_name: spark-submit
+    depends_on:
+      - spark-master
+      - spark-worker
+      - kafka
+      - postgres
+    environment:
+      KAFKA_BROKER: kafka:29092
+      KAFKA_TOPIC: crypto-prices
+      CHECKPOINT_DIR: /tmp/spark-checkpoints/crypto
+      JDBC_URL: jdbc:postgresql://postgres:5432/streamdb
+      DB_USER: streamuser
+      DB_PASSWORD: streampass
+      ANOMALY_THRESHOLD_PCT: "10.0"
+    command: >
+      spark-submit
+      --master spark://spark-master:7077
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.postgresql:postgresql:42.7.1
+      --conf spark.sql.shuffle.partitions=4
+      /opt/spark-jobs/stream_processor.py
+    volumes:
+      - ./spark_jobs:/opt/spark-jobs
+    restart: unless-stopped
+    networks:
+      - streaming-net
+
   # ─────────────────────────────────────────
   # APACHE AIRFLOW (orchestration)
   # ─────────────────────────────────────────
@@ -91,7 +172,8 @@ services:
     image: apache/airflow:2.8.0
     container_name: airflow
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://streamuser:streampass@postgres/streamdb
@@ -117,7 +199,8 @@ services:
     image: grafana/grafana:10.2.0
     container_name: grafana
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "3000:3000"
     environment:

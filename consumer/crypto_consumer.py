@@ -9,21 +9,22 @@ Run: python consumer/crypto_consumer.py
 
 import json
 import logging
+import os
 import psycopg2
 from psycopg2.extras import execute_values
 from kafka import KafkaConsumer
 
-# ── Config ────────────────────────────────────────────────
-KAFKA_BROKER = "localhost:9092"
-TOPIC = "crypto-prices"
-GROUP_ID = "crypto-consumer-group"
+# ── Config (env vars allow override in docker-compose) ────
+KAFKA_BROKER = os.getenv("KAFKA_BROKER", "localhost:9092")
+TOPIC        = os.getenv("KAFKA_TOPIC",  "crypto-prices")
+GROUP_ID     = os.getenv("GROUP_ID",     "crypto-consumer-group")
 
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 5432,
-    "dbname": "streamdb",
-    "user": "streamuser",
-    "password": "streampass",
+    "host":     os.getenv("DB_HOST",     "localhost"),
+    "port":     int(os.getenv("DB_PORT", "5432")),
+    "dbname":   os.getenv("DB_NAME",     "streamdb"),
+    "user":     os.getenv("DB_USER",     "streamuser"),
+    "password": os.getenv("DB_PASSWORD", "streampass"),
 }
 
 # ── Logging ───────────────────────────────────────────────

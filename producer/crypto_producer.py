@@ -8,6 +8,7 @@ Run: python producer/crypto_producer.py
 """
 
 import json
+import os
 import time
 import logging
 from datetime import datetime
@@ -15,10 +16,10 @@ from datetime import datetime
 import requests
 from kafka import KafkaProducer
 
-# ── Config ────────────────────────────────────────────────
-KAFKA_BROKER = "localhost:9092"
-TOPIC = "crypto-prices"
-POLL_INTERVAL_SECONDS = 10  # fetch every 10 seconds
+# ── Config (env vars allow override in docker-compose) ────
+KAFKA_BROKER          = os.getenv("KAFKA_BROKER",         "localhost:9092")
+TOPIC                 = os.getenv("KAFKA_TOPIC",          "crypto-prices")
+POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "10"))
 
 COINS = [
     "bitcoin",
