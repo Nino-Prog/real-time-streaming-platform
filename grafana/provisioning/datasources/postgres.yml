@@ -1,0 +1,19 @@
+apiVersion: 1
+
+datasources:
+  - name: PostgreSQL
+    type: postgres
+    uid: crypto-postgres
+    url: postgres:5432
+    user: streamuser
+    secureJsonData:
+      password: streampass
+    jsonData:
+      database: streamdb
+      sslmode: disable
+      maxOpenConns: 10
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+      postgresVersion: 1500
+      timescaledb: false
+    editable: false

@@ -1,0 +1,423 @@
+{
+  "__inputs": [],
+  "__requires": [
+    { "type": "grafana", "id": "grafana", "name": "Grafana", "version": "10.2.0" },
+    { "type": "datasource", "id": "postgres", "name": "PostgreSQL", "version": "1.0.0" },
+    { "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
+    { "type": "panel", "id": "table", "name": "Table", "version": "" },
+    { "type": "panel", "id": "stat", "name": "Stat", "version": "" },
+    { "type": "panel", "id": "barchart", "name": "Bar chart", "version": "" }
+  ],
+  "annotations": { "list": [] },
+  "description": "Real-time crypto price streaming dashboard — Kafka + Spark + PostgreSQL",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+
+    {
+      "id": 1,
+      "title": "BTC — Latest Price",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50000 },
+              { "color": "orange", "value": 80000 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, price_usd AS \"BTC\" FROM crypto_prices WHERE coin = 'bitcoin' ORDER BY event_timestamp DESC LIMIT 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "title": "ETH — Latest Price",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "purple", "value": 3000 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, price_usd AS \"ETH\" FROM crypto_prices WHERE coin = 'ethereum' ORDER BY event_timestamp DESC LIMIT 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "title": "SOL — Latest Price",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "semi-dark-purple", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, price_usd AS \"SOL\" FROM crypto_prices WHERE coin = 'solana' ORDER BY event_timestamp DESC LIMIT 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "title": "ADA — Latest Price",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 4,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "light-blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, price_usd AS \"ADA\" FROM crypto_prices WHERE coin = 'cardano' ORDER BY event_timestamp DESC LIMIT 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "title": "DOGE — Latest Price",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 5,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "yellow", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, price_usd AS \"DOGE\" FROM crypto_prices WHERE coin = 'dogecoin' ORDER BY event_timestamp DESC LIMIT 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "title": "Anomaly Alerts (last hour)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT NOW() AS time, COUNT(*) AS \"Anomalies\" FROM crypto_anomalies WHERE flagged_at >= NOW() - INTERVAL '1 hour'",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "title": "Live Crypto Prices (USD)",
+      "type": "timeseries",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "spanNulls": false,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT event_timestamp AS time, price_usd AS \"Bitcoin\"\nFROM crypto_prices\nWHERE coin = 'bitcoin' AND $__timeFilter(event_timestamp)\nORDER BY time",
+          "format": "time_series",
+          "refId": "BTC"
+        },
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT event_timestamp AS time, price_usd AS \"Ethereum\"\nFROM crypto_prices\nWHERE coin = 'ethereum' AND $__timeFilter(event_timestamp)\nORDER BY time",
+          "format": "time_series",
+          "refId": "ETH"
+        },
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT event_timestamp AS time, price_usd AS \"Solana\"\nFROM crypto_prices\nWHERE coin = 'solana' AND $__timeFilter(event_timestamp)\nORDER BY time",
+          "format": "time_series",
+          "refId": "SOL"
+        },
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT event_timestamp AS time, price_usd AS \"Cardano\"\nFROM crypto_prices\nWHERE coin = 'cardano' AND $__timeFilter(event_timestamp)\nORDER BY time",
+          "format": "time_series",
+          "refId": "ADA"
+        },
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT event_timestamp AS time, price_usd AS \"Dogecoin\"\nFROM crypto_prices\nWHERE coin = 'dogecoin' AND $__timeFilter(event_timestamp)\nORDER BY time",
+          "format": "time_series",
+          "refId": "DOGE"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "title": "1-Minute OHLC (Spark Aggregations)",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 14, "x": 0, "y": 13 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "footer": { "show": false },
+        "sortBy": [{ "displayName": "Bucket", "desc": true }]
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "currencyUSD", "decimals": 2 },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Coin" },      "properties": [{ "id": "unit", "value": "string" }, { "id": "custom.width", "value": 90 }] },
+          { "matcher": { "id": "byName", "options": "Bucket" },    "properties": [{ "id": "unit", "value": "dateTimeAsLocal" }, { "id": "custom.width", "value": 160 }] },
+          { "matcher": { "id": "byName", "options": "Events" },    "properties": [{ "id": "unit", "value": "none" }, { "id": "custom.width", "value": 70 }] },
+          { "matcher": { "id": "byName", "options": "High" },      "properties": [{ "id": "custom.displayMode", "value": "color-text" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
+          { "matcher": { "id": "byName", "options": "Low" },       "properties": [{ "id": "custom.displayMode", "value": "color-text" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT coin AS \"Coin\", bucket AS \"Bucket\", open AS \"Open\", high AS \"High\", low AS \"Low\", close AS \"Close\", avg_price AS \"Avg\", event_count AS \"Events\" FROM crypto_ohlc_1min WHERE $__timeFilter(bucket) ORDER BY bucket DESC, coin LIMIT 100",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "title": "Price Anomalies Detected by Spark",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 10, "x": 14, "y": 13 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "footer": { "show": false },
+        "sortBy": [{ "displayName": "Flagged At", "desc": true }]
+      },
+      "fieldConfig": {
+        "defaults": { "decimals": 2 },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Coin" },        "properties": [{ "id": "unit", "value": "string" }, { "id": "custom.width", "value": 90 }] },
+          { "matcher": { "id": "byName", "options": "Price" },       "properties": [{ "id": "unit", "value": "currencyUSD" }] },
+          { "matcher": { "id": "byName", "options": "1h Avg" },      "properties": [{ "id": "unit", "value": "currencyUSD" }] },
+          { "matcher": { "id": "byName", "options": "Deviation %" }, "properties": [{ "id": "unit", "value": "percent" }, { "id": "custom.displayMode", "value": "color-background" }, { "id": "color", "value": { "mode": "thresholds" } }, { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }, { "color": "orange", "value": 15 }, { "color": "red", "value": 25 }] } }] },
+          { "matcher": { "id": "byName", "options": "Flagged At" },  "properties": [{ "id": "unit", "value": "dateTimeAsLocal" }, { "id": "custom.width", "value": 160 }] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT coin AS \"Coin\", price_usd AS \"Price\", avg_price_1h AS \"1h Avg\", deviation_pct AS \"Deviation %\", flagged_at AS \"Flagged At\" FROM crypto_anomalies WHERE flagged_at >= NOW() - INTERVAL '3 hours' ORDER BY flagged_at DESC LIMIT 50",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "title": "24h Change % by Coin",
+      "type": "barchart",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 21 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "orientation": "auto",
+        "groupWidth": 0.7,
+        "barWidth": 0.97,
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 0 }
+            ]
+          },
+          "custom": { "fillOpacity": 80 }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT coin AS \"Coin\", change_24h_pct AS \"24h Change %\" FROM crypto_prices WHERE (coin, ingested_at) IN (SELECT coin, MAX(ingested_at) FROM crypto_prices GROUP BY coin) ORDER BY change_24h_pct DESC",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 11,
+      "title": "Event Ingestion Rate (events / minute)",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 21 },
+      "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "drawStyle": "bars"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "crypto-postgres" },
+          "rawSql": "SELECT date_trunc('minute', ingested_at) AS time, COUNT(*) AS \"Events/min\" FROM crypto_prices WHERE $__timeFilter(ingested_at) GROUP BY 1 ORDER BY 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    }
+
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": ["crypto", "streaming", "kafka", "spark"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Real-Time Crypto Streaming Platform",
+  "uid": "crypto-streaming-v1",
+  "version": 1
+}
