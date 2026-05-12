@@ -203,4 +203,4 @@ real-time-streaming-platform/
 **Nino Ombongi**
 nino.ombongi.work@gmail.com
 
-[GitHub](https://github.com/Nino-Prog) | [LinkedIn](https://linkedin.com/in/nino-ombongi)
+[GitHub](https://github.com/Nino-Prog) | [LinkedIn](https://www.linkedin.com/in/nino-ombongi-027325254/)
