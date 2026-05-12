@@ -201,6 +201,6 @@ real-time-streaming-platform/
 ## Author
 
 **Nino Ombongi**
-nino.ombongi.work@gmail.com | Durham, NC
+nino.ombongi.work@gmail.com
 
 [GitHub](https://github.com/Nino-Prog) | [LinkedIn](https://linkedin.com/in/nino-ombongi)
